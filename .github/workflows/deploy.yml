@@ -1,1 +1,71 @@
+name: Deploy
 
+on:
+  workflow_dispatch:
+    inputs:
+      network:
+        description: 'Network to deploy to'
+        required: true
+        default: 'sepolia'
+        type: choice
+        options:
+          - sepolia
+          - localhost
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy to ${{ github.event.inputs.network }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Compile contracts
+        run: npm run compile
+
+      - name: Deploy to ${{ github.event.inputs.network }}
+        run: npm run deploy
+        env:
+          SEPOLIA_RPC_URL: ${{ secrets.SEPOLIA_RPC_URL }}
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          REGULATOR_ADDRESS: ${{ secrets.REGULATOR_ADDRESS }}
+          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+
+      - name: Verify deployment
+        if: github.event.inputs.network == 'sepolia'
+        run: npm run verify
+        env:
+          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+        continue-on-error: true
+
+      - name: Upload deployment artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-${{ github.event.inputs.network }}
+          path: |
+            deployments/
+          retention-days: 90
+
+      - name: Create deployment summary
+        run: |
+          echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Network**: ${{ github.event.inputs.network }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Date**: $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f deployments/${{ github.event.inputs.network }}.json ]; then
+            echo "**Contract Address**: $(cat deployments/${{ github.event.inputs.network }}.json | grep contractAddress | cut -d'"' -f4)" >> $GITHUB_STEP_SUMMARY
+          fi
