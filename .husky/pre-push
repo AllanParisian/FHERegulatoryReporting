@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🚀 Running pre-push checks..."
+
+# Run security audit
+echo "🔒 Running security audit..."
+npm audit --audit-level=moderate || echo "⚠️  Security warnings found"
+
+# Run full test suite with coverage
+echo "🧪 Running full test suite..."
+npm run test:coverage || exit 1
+
+# Check for console.logs in contracts (security issue)
+echo "🔍 Checking for debug statements..."
+if grep -r "console.log" contracts/ 2>/dev/null; then
+  echo "❌ Found console.log in contracts - remove before pushing"
+  exit 1
+fi
+
+echo "✅ All pre-push checks passed!"
