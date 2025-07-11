@@ -1,4 +1,4 @@
-# 🔐 Privacy-Preserving Regulatory Reporting System
+# Privacy-Preserving Regulatory Reporting System
 
 > **Confidential compliance reporting using Fully Homomorphic Encryption on blockchain**
 
@@ -7,19 +7,45 @@ Built with [Zama fhEVM](https://docs.zama.ai/fhevm) - enabling financial institu
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Solidity](https://img.shields.io/badge/Solidity-0.8.24-blue.svg)](https://soliditylang.org/)
 [![Hardhat](https://img.shields.io/badge/Hardhat-2.19.0-orange.svg)](https://hardhat.org/)
-[![Tests](https://img.shields.io/badge/Tests-60%2B-success.svg)](./TESTING.md)
-[![Coverage](https://img.shields.io/badge/Coverage-58.8%25-yellow.svg)](./TEST_REPORT.md)
 
 **Network**: Sepolia Testnet (Chain ID: 11155111)
 **Status**: Production-ready with 60+ comprehensive tests
 
+**GitHub Repository**: [https://github.com/AllanParisian/FHERegulatoryReporting](https://github.com/AllanParisian/FHERegulatoryReporting)
+
 ---
 
-## 🌐 Live Demo
+## 📺 Demo Video
 
-🎯 **Try it now**: [Deployment Guide](./DEPLOYMENT.md)
-📺 **Video Demo**: [See implementation walkthrough]
-🔗 **Etherscan**: [View deployed contract](https://sepolia.etherscan.io/)
+**A demonstration video is included in this repository as `demo.mp4`**
+
+⚠️ **Note**: The video file must be **downloaded to view**. Please download `demo.mp4` from the repository to watch the full demonstration.
+
+---
+
+## 🎯 Core Concept
+
+### FHE Contract for Privacy Regulatory Reporting
+
+This project implements a **privacy-preserving regulatory reporting system** using Fully Homomorphic Encryption (FHE) on the blockchain. The core concept enables:
+
+**Confidential Regulatory Data Submission**
+- Financial institutions submit encrypted transaction reports to regulators
+- All sensitive data (amounts, transaction counts, risk scores) remains encrypted on-chain
+- Regulators can verify reports without seeing the actual values
+- Selective decryption only for authorized analysts
+
+**Key Innovation**: Traditional blockchain transparency is incompatible with financial privacy requirements. This FHE-based solution allows regulatory compliance while maintaining confidentiality of sensitive business data.
+
+### How It Works
+
+```
+Financial Institution → Encrypt Data (FHE) → Submit to Blockchain
+                                                      ↓
+                                            Encrypted Storage (euint64, euint32, euint8)
+                                                      ↓
+Regulator → Verify Compliance → Grant Access → Analyst Decrypts (with permission)
+```
 
 ---
 
@@ -40,11 +66,12 @@ Built with [Zama fhEVM](https://docs.zama.ai/fhevm) - enabling financial institu
 
 ## 🏗️ Architecture
 
+### Smart Contract Layer
+
 ```
 ┌─────────────────────────────────────────────┐
-│           Smart Contract Layer              │
+│    PrivacyRegulatoryReporting.sol           │
 ├─────────────────────────────────────────────┤
-│  PrivacyRegulatoryReporting.sol             │
 │  ├─ Encrypted Storage (euint64, euint32)   │
 │  ├─ TFHE Operations (FHE.asEuint)           │
 │  ├─ Role-Based Access Control              │
@@ -54,7 +81,7 @@ Built with [Zama fhEVM](https://docs.zama.ai/fhevm) - enabling financial institu
 ┌─────────────────────────────────────────────┐
 │         Zama fhEVM Integration              │
 ├─────────────────────────────────────────────┤
-│  @fhevm/solidity - Encrypted types          │
+│  fhevm/solidity - Encrypted types           │
 │  TFHE.sol - Homomorphic operations          │
 │  Sepolia Testnet Deployment                 │
 └─────────────────────────────────────────────┘
@@ -91,8 +118,8 @@ Regulator → Verify Report → Grant Access → Analyst Decrypts
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/privacy-regulatory-reporting.git
-cd privacy-regulatory-reporting
+git clone https://github.com/AllanParisian/FHERegulatoryReporting.git
+cd FHERegulatoryReporting
 
 # Install dependencies
 npm install
@@ -512,6 +539,11 @@ See [DEPLOYMENT.md](./DEPLOYMENT.md) for more troubleshooting tips.
 
 ## 🔗 Links
 
+### Project Resources
+
+- **GitHub Repository**: [https://github.com/AllanParisian/FHERegulatoryReporting](https://github.com/AllanParisian/FHERegulatoryReporting)
+- **Demo Video**: Download `demo.mp4` from repository to view
+
 ### Zama Ecosystem
 
 - **Zama Documentation**: https://docs.zama.ai/fhevm
@@ -534,7 +566,7 @@ See [DEPLOYMENT.md](./DEPLOYMENT.md) for more troubleshooting tips.
 
 ## 🏆 Acknowledgments
 
-Built with ❤️ using cutting-edge privacy-preserving technology:
+Built with cutting-edge privacy-preserving technology:
 
 - **Zama** - For pioneering fhEVM technology and TFHE libraries
 - **Ethereum Foundation** - For Sepolia testnet infrastructure
@@ -547,37 +579,15 @@ Built with ❤️ using cutting-edge privacy-preserving technology:
 
 This project is licensed under the **MIT License** - see the [LICENSE](./LICENSE) file for details.
 
-```
-MIT License
-
-Copyright (c) 2025 Privacy-Preserving Regulatory Reporting Team
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction...
-```
-
 ---
 
 ## 📞 Support
 
 For questions, issues, or feature requests:
 
-- **GitHub Issues**: [Create an issue](https://github.com/your-username/privacy-regulatory-reporting/issues)
+- **GitHub Issues**: [Create an issue](https://github.com/AllanParisian/FHERegulatoryReporting/issues)
 - **Documentation**: Check our comprehensive [docs](./DEPLOYMENT.md)
-- **Email**: support@example.com
 
 ---
 
 **Built for Privacy-Preserving Compliance** | **Powered by Zama fhEVM** | **Production-Ready**
-
----
-
-<div align="center">
-
-**⭐ Star this repository if you find it helpful!**
-
-[![GitHub stars](https://img.shields.io/github/stars/your-username/privacy-regulatory-reporting?style=social)](https://github.com/your-username/privacy-regulatory-reporting)
-[![GitHub forks](https://img.shields.io/github/forks/your-username/privacy-regulatory-reporting?style=social)](https://github.com/your-username/privacy-regulatory-reporting/fork)
-
-</div>
