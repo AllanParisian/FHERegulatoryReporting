@@ -1,0 +1,63 @@
+{
+  "name": "privacy-regulatory-reporting",
+  "version": "1.0.0",
+  "description": "Privacy-Preserving Regulatory Reporting System - Confidential compliance reporting using Fully Homomorphic Encryption",
+  "main": "index.js",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "test:coverage": "hardhat coverage",
+    "test:gas": "REPORT_GAS=true hardhat test",
+    "deploy": "hardhat run scripts/deploy.js --network sepolia",
+    "deploy:local": "hardhat run scripts/deploy.js --network localhost",
+    "verify": "hardhat run scripts/verify.js --network sepolia",
+    "interact": "hardhat run scripts/interact.js --network sepolia",
+    "simulate": "hardhat run scripts/simulate.js --network sepolia",
+    "node": "hardhat node",
+    "clean": "hardhat clean",
+    "lint": "npm run lint:sol && npm run lint:js && npm run format:check",
+    "lint:sol": "solhint 'contracts/**/*.sol' --max-warnings 0",
+    "lint:js": "eslint 'scripts/**/*.js' 'test/**/*.js' --max-warnings 0",
+    "lint:fix": "solhint 'contracts/**/*.sol' --fix && eslint 'scripts/**/*.js' 'test/**/*.js' --fix",
+    "format": "prettier --write 'contracts/**/*.sol' 'scripts/**/*.js' 'test/**/*.js'",
+    "format:check": "prettier --check 'contracts/**/*.sol' 'scripts/**/*.js' 'test/**/*.js'",
+    "security": "npm run security:audit && npm run security:slither",
+    "security:audit": "npm audit --audit-level=moderate",
+    "security:slither": "echo 'Slither analysis requires Python installation'",
+    "security:mythril": "echo 'Mythril analysis requires Python installation'",
+    "prepare": "husky install",
+    "ci": "npm run lint && npm run compile && npm test",
+    "ci:coverage": "npm run lint && npm run compile && npm run test:coverage",
+    "ci:security": "npm run security:audit && npm run lint && npm run compile && npm run test"
+  },
+  "keywords": [
+    "blockchain",
+    "ethereum",
+    "fhevm",
+    "privacy",
+    "regulatory-compliance",
+    "confidential-computing",
+    "hardhat"
+  ],
+  "author": "Privacy Compliance Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@nomicfoundation/hardhat-verify": "^2.0.0",
+    "hardhat": "^2.19.0",
+    "hardhat-gas-reporter": "^1.0.9",
+    "solidity-coverage": "^0.8.5",
+    "dotenv": "^16.3.1",
+    "chai": "^4.3.10",
+    "ethers": "^6.9.0",
+    "prettier": "^3.1.0",
+    "prettier-plugin-solidity": "^1.2.0",
+    "solhint": "^4.0.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-security": "^2.1.0",
+    "husky": "^9.0.0"
+  },
+  "dependencies": {
+    "fhevm": "^0.5.0"
+  }
+}
