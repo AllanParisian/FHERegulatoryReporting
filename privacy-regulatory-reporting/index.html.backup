@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Regulatory Reporting System</title>
+    <script src="https://cdn.ethers.io/lib/ethers-5.7.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .wallet-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .connect-btn {
+            background: linear-gradient(45deg, #7e22ce, #a855f7);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .connect-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(126, 34, 206, 0.4);
+        }
+
+        .connect-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .wallet-info {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-family: monospace;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #7e22ce;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .action-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .action-btn:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .secondary-btn {
+            background: #6366f1;
+        }
+
+        .secondary-btn:hover {
+            background: #4f46e5;
+        }
+
+        .danger-btn {
+            background: #ef4444;
+        }
+
+        .danger-btn:hover {
+            background: #dc2626;
+        }
+
+        .info-btn {
+            background: #06b6d4;
+        }
+
+        .info-btn:hover {
+            background: #0891b2;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e1e5e9;
+            margin-bottom: 25px;
+        }
+
+        .tab {
+            padding: 12px 25px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .tab.active {
+            border-bottom-color: #7e22ce;
+            color: #7e22ce;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .status {
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: 600;
+        }
+
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .status.info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+
+        .report-item {
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+        }
+
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .report-id {
+            font-weight: 600;
+            color: #7e22ce;
+        }
+
+        .report-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-verified {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-processed {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            .tab {
+                min-width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Privacy Regulatory Reporting</h1>
+            <p>Confidential Financial Compliance System</p>
+        </div>
+
+        <div class="card wallet-section">
+            <button id="connectWallet" class="connect-btn" onclick="connectWallet()">Connect Wallet</button>
+            <button class="action-btn secondary-btn" onclick="checkStatus()" style="margin-left: 10px;">Check Status</button>
+            <div id="walletInfo" class="wallet-info" style="display: none;"></div>
+        </div>
+
+        <div class="card">
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('submit')">Submit Report</div>
+                <div class="tab" onclick="switchTab('verify')">Verify Reports</div>
+                <div class="tab" onclick="switchTab('manage')">Manage System</div>
+                <div class="tab" onclick="switchTab('view')">View Reports</div>
+            </div>
+
+            <div id="submitTab" class="tab-content active">
+                <h3>Submit Confidential Report</h3>
+
+                <div id="authorizationAlert" style="display: none;" class="status error">
+                    <strong>⚠️ Not Authorized</strong><br>
+                    Your address is not authorized to submit reports. Please contact the regulator or use the "Manage System" tab to authorize your address (if you're the owner/regulator).
+                </div>
+
+                <div class="form-group">
+                    <button class="action-btn info-btn" onclick="checkMyAuthorization()">Check My Authorization Status</button>
+                    <button class="action-btn" onclick="authorizeMySelf()" style="background: #f59e0b;">Authorize My Address (Owner/Regulator)</button>
+                </div>
+
+                <div class="form-group">
+                    <label for="totalAmount">Total Amount (ETH)</label>
+                    <input type="number" id="totalAmount" step="0.000001" placeholder="Enter total amount">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="transactionCount">Transaction Count</label>
+                        <input type="number" id="transactionCount" placeholder="Number of transactions">
+                    </div>
+                    <div class="form-group">
+                        <label for="riskScore">Risk Score (0-100)</label>
+                        <input type="number" id="riskScore" min="0" max="100" placeholder="Risk assessment score">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="periodId">Reporting Period</label>
+                    <select id="periodId">
+                        <option value="">Select reporting period</option>
+                    </select>
+                </div>
+                <button class="action-btn" onclick="submitReport()">Submit Confidential Report</button>
+                <div id="submitStatus"></div>
+            </div>
+
+            <div id="verifyTab" class="tab-content">
+                <h3>Verify & Process Reports</h3>
+                <div class="form-group">
+                    <label for="reportIdVerify">Report ID</label>
+                    <input type="number" id="reportIdVerify" placeholder="Enter report ID to verify">
+                </div>
+                <button class="action-btn" onclick="verifyReport()">Verify Report</button>
+                <button class="action-btn info-btn" onclick="processReport()">Process Report</button>
+                <div class="form-group">
+                    <label for="analystAddress">Analyst Address (for decryption access)</label>
+                    <input type="text" id="analystAddress" placeholder="0x...">
+                </div>
+                <button class="action-btn secondary-btn" onclick="grantDecryptionAccess()">Grant Decryption Access</button>
+                <div id="verifyStatus"></div>
+            </div>
+
+            <div id="manageTab" class="tab-content">
+                <h3>System Management</h3>
+                <div class="grid">
+                    <div>
+                        <h4>Entity Authorization</h4>
+                        <div class="form-group">
+                            <label for="entityAddress">Entity Address</label>
+                            <input type="text" id="entityAddress" placeholder="0x...">
+                        </div>
+                        <button class="action-btn" onclick="authorizeEntity()">Authorize Entity</button>
+                        <button class="action-btn danger-btn" onclick="revokeEntity()">Revoke Entity</button>
+                    </div>
+                    <div>
+                        <h4>Reporting Period</h4>
+                        <div class="form-group">
+                            <label for="periodDuration">Duration (days)</label>
+                            <input type="number" id="periodDuration" placeholder="90">
+                        </div>
+                        <div class="form-group">
+                            <label for="submissionDays">Submission Deadline (days)</label>
+                            <input type="number" id="submissionDays" placeholder="30">
+                        </div>
+                        <button class="action-btn" onclick="createReportingPeriod()">Create Period</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="closePeriodId">Close Period ID</label>
+                    <input type="number" id="closePeriodId" placeholder="Period ID to close">
+                </div>
+                <button class="action-btn danger-btn" onclick="closePeriod()">Close Period</button>
+                <div id="manageStatus"></div>
+            </div>
+
+            <div id="viewTab" class="tab-content">
+                <h3>Reports Overview</h3>
+                <div class="grid">
+                    <div>
+                        <button class="action-btn info-btn" onclick="loadReports()">Load Reports</button>
+                        <button class="action-btn secondary-btn" onclick="loadPeriods()">Load Periods</button>
+                        <button class="action-btn" onclick="checkAuthorization()">Check Authorization</button>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label for="reportIdView">Report ID</label>
+                            <input type="number" id="reportIdView" placeholder="Enter report ID">
+                        </div>
+                        <button class="action-btn info-btn" onclick="getReportInfo()">Get Report Info</button>
+                    </div>
+                </div>
+                <div id="reportsContainer"></div>
+                <div id="viewStatus"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CONTRACT_ADDRESS = "0x0B7F69092DF31270DE216D07ca22B3B8ee237154";
+        const CONTRACT_ABI = [
+            "function regulator() view returns (address)",
+            "function owner() view returns (address)",
+            "function reportCounter() view returns (uint256)",
+            "function currentPeriod() view returns (uint256)",
+            "function authorizeEntity(address entity)",
+            "function revokeEntity(address entity)",
+            "function createReportingPeriod(uint256 duration, uint256 submissionDeadlineDays)",
+            "function submitConfidentialReport(uint64 totalAmount, uint32 transactionCount, uint8 riskScore, uint256 periodId)",
+            "function verifyReport(uint256 reportId)",
+            "function processReport(uint256 reportId)",
+            "function grantDecryptionAccess(uint256 reportId, address analyst)",
+            "function getReportInfo(uint256 reportId) view returns (address submitter, uint256 timestamp, uint256 reportPeriod, bool verified, bool processed)",
+            "function getPeriodInfo(uint256 periodId) view returns (uint256 startTime, uint256 endTime, bool active, uint256 submissionDeadline, uint256 totalSubmissions)",
+            "function getCurrentPeriod() view returns (uint256)",
+            "function hasEntitySubmitted(address entity, uint256 periodId) view returns (bool)",
+            "function isAuthorizedEntity(address entity) view returns (bool)",
+            "function getSubmissionDeadline(uint256 periodId) view returns (uint256)",
+            "function getTotalReports() view returns (uint256)",
+            "function closePeriod(uint256 periodId)",
+            "event ReportSubmitted(address indexed submitter, uint256 indexed reportId, uint256 indexed period)",
+            "event ReportVerified(uint256 indexed reportId, address indexed verifier)",
+            "event ReportingPeriodCreated(uint256 indexed period, uint256 startTime, uint256 endTime)",
+            "event EntityAuthorized(address indexed entity)",
+            "event EntityRevoked(address indexed entity)"
+        ];
+
+        let provider;
+        let signer;
+        let contract;
+        let userAccount;
+
+        function checkStatus() {
+            let statusMsg = `
+                <strong>System Status:</strong><br>
+                Ethers.js: ${typeof ethers !== 'undefined' ? '✅ Loaded' : '❌ Not loaded'}<br>
+                MetaMask: ${typeof window.ethereum !== 'undefined' ? '✅ Available' : '❌ Not available'}<br>
+                Provider: ${provider ? '✅ Connected' : '❌ Not connected'}<br>
+                Contract: ${contract ? '✅ Initialized' : '❌ Not initialized'}<br>
+                Account: ${userAccount || 'Not connected'}
+            `;
+            showStatus('info', statusMsg, 'submitStatus');
+        }
+
+        async function init() {
+            if (typeof ethers === 'undefined') {
+                showStatus('error', 'Loading blockchain library... Please refresh if this persists.', 'submitStatus');
+                return;
+            }
+
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    provider = new ethers.providers.Web3Provider(window.ethereum);
+                    showStatus('success', 'Ready to connect wallet', 'submitStatus');
+                } catch (error) {
+                    showStatus('error', 'Error initializing provider: ' + error.message, 'submitStatus');
+                }
+            } else {
+                showStatus('error', 'Please install MetaMask to use this application.', 'submitStatus');
+            }
+        }
+
+        async function connectWallet() {
+            try {
+                if (typeof ethers === 'undefined') {
+                    throw new Error('Blockchain library not loaded. Please refresh the page.');
+                }
+
+                if (typeof window.ethereum === 'undefined') {
+                    throw new Error('MetaMask is not installed. Please install MetaMask browser extension.');
+                }
+
+                showStatus('info', 'Connecting to wallet...', 'submitStatus');
+
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+                if (accounts.length === 0) {
+                    throw new Error('No accounts available. Please make sure MetaMask is unlocked.');
+                }
+
+                provider = new ethers.providers.Web3Provider(window.ethereum);
+                signer = provider.getSigner();
+                userAccount = await signer.getAddress();
+                contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+
+                document.getElementById('connectWallet').textContent = 'Connected';
+                document.getElementById('connectWallet').disabled = true;
+                document.getElementById('walletInfo').style.display = 'block';
+
+                const network = await provider.getNetwork();
+                document.getElementById('walletInfo').innerHTML = `
+                    <strong>Connected Account:</strong><br>
+                    ${userAccount}<br>
+                    <strong>Network:</strong> ${network.name} (${network.chainId})<br>
+                    <strong>Contract:</strong> ${CONTRACT_ADDRESS}
+                `;
+
+                showStatus('success', 'Wallet connected successfully!', 'submitStatus');
+                await loadPeriodsForSelect();
+
+                setTimeout(() => {
+                    checkMyAuthorization();
+                }, 1000);
+
+            } catch (error) {
+                showStatus('error', 'Failed to connect wallet: ' + error.message, 'submitStatus');
+            }
+        }
+
+        async function submitReport() {
+            try {
+                if (!contract) {
+                    throw new Error('Please connect your wallet first');
+                }
+
+                const totalAmount = document.getElementById('totalAmount').value;
+                const transactionCount = document.getElementById('transactionCount').value;
+                const riskScore = document.getElementById('riskScore').value;
+                const periodId = document.getElementById('periodId').value;
+
+                if (!totalAmount || !transactionCount || !riskScore || !periodId) {
+                    throw new Error('Please fill in all required fields');
+                }
+
+                if (riskScore < 0 || riskScore > 100) {
+                    throw new Error('Risk score must be between 0 and 100');
+                }
+
+                showStatus('info', 'Submitting confidential report...', 'submitStatus');
+
+                const amountInWei = ethers.utils.parseEther(totalAmount);
+                const amountUint64 = amountInWei.div(ethers.utils.parseEther("0.000001")).toNumber();
+
+                const tx = await contract.submitConfidentialReport(
+                    amountUint64,
+                    parseInt(transactionCount),
+                    parseInt(riskScore),
+                    parseInt(periodId)
+                );
+
+                showStatus('info', `Transaction submitted: ${tx.hash}`, 'submitStatus');
+
+                const receipt = await tx.wait();
+                showStatus('success', `Report submitted successfully! Transaction: ${receipt.transactionHash}`, 'submitStatus');
+
+                document.getElementById('totalAmount').value = '';
+                document.getElementById('transactionCount').value = '';
+                document.getElementById('riskScore').value = '';
+
+            } catch (error) {
+                console.error('Submit report error:', error);
+                if (error.message.includes('Not authorized')) {
+                    document.getElementById('authorizationAlert').style.display = 'block';
+                    showStatus('error', 'You are not authorized to submit reports. Please authorize your address first.', 'submitStatus');
+                } else {
+                    showStatus('error', 'Failed to submit report: ' + error.message, 'submitStatus');
+                }
+            }
+        }
+
+        async function checkMyAuthorization() {
+            try {
+                if (!contract || !userAccount) {
+                    throw new Error('Please connect your wallet first');
+                }
+
+                showStatus('info', 'Checking authorization...', 'submitStatus');
+
+                const isAuthorized = await contract.isAuthorizedEntity(userAccount);
+                const owner = await contract.owner();
+                const regulator = await contract.regulator();
+
+                const isOwner = userAccount.toLowerCase() === owner.toLowerCase();
+                const isRegulator = userAccount.toLowerCase() === regulator.toLowerCase();
+
+                if (isAuthorized) {
+                    document.getElementById('authorizationAlert').style.display = 'none';
+                    showStatus('success', `✅ Your address IS authorized to submit reports!<br>Owner: ${isOwner ? 'Yes' : 'No'} | Regulator: ${isRegulator ? 'Yes' : 'No'}`, 'submitStatus');
+                } else {
+                    document.getElementById('authorizationAlert').style.display = 'block';
+                    showStatus('error', `❌ Your address is NOT authorized to submit reports.<br>Owner: ${isOwner ? 'Yes' : 'No'} | Regulator: ${isRegulator ? 'Yes' : 'No'}<br>Contract Owner: ${owner}<br>Regulator: ${regulator}`, 'submitStatus');
+                }
+
+            } catch (error) {
+                console.error('Check authorization error:', error);
+                showStatus('error', 'Failed to check authorization: ' + error.message, 'submitStatus');
+            }
+        }
+
+        async function authorizeMySelf() {
+            try {
+                if (!contract || !userAccount) {
+                    throw new Error('Please connect your wallet first');
+                }
+
+                showStatus('info', 'Authorizing your address...', 'submitStatus');
+
+                const tx = await contract.authorizeEntity(userAccount);
+                showStatus('info', `Transaction submitted: ${tx.hash}`, 'submitStatus');
+
+                const receipt = await tx.wait();
+                showStatus('success', `✅ Your address has been authorized successfully!<br>Transaction: ${receipt.transactionHash}`, 'submitStatus');
+
+                document.getElementById('authorizationAlert').style.display = 'none';
+
+                await checkMyAuthorization();
+
+            } catch (error) {
+                console.error('Authorize self error:', error);
+                if (error.message.includes('Only regulator')) {
+                    showStatus('error', 'Only the regulator can authorize addresses. Please contact the regulator to authorize your address.', 'submitStatus');
+                } else {
+                    showStatus('error', 'Failed to authorize address: ' + error.message, 'submitStatus');
+                }
+            }
+        }
+
+        async function verifyReport() {
+            try {
+                if (!contract) {
+                    throw new Error('Please connect your wallet first');
+                }
+
+                const reportId = document.getElementById('reportIdVerify').value;
+                if (!reportId) {
+                    throw new Error('Please enter a report ID');
+                }
+
+                showStatus('info', 'Verifying report...', 'verifyStatus');
+
+                const tx = await contract.verifyReport(parseInt(reportId));
+                showStatus('info', `Transaction submitted: ${tx.hash}`, 'verifyStatus');
+
+                const receipt = await tx.wait();
+                showStatus('success', `Report verified successfully! Transaction: ${receipt.transactionHash}`, 'verifyStatus');
+
+            } catch (error) {
+                showStatus('error', 'Failed to verify report: ' + error.message, 'verifyStatus');
+            }
+        }
+
+        async function processReport() {
+            try {
+                if (!contract) {
+                    throw new Error('Please connect your wallet first');
+                }
+
+                const reportId = document.getElementById('reportIdVerify').value;
+                if (!reportId) {
+                    throw new Error('Please enter a report ID');
+                }
+
+                showStatus('info', 'Processing report...', 'verifyStatus');
+
+                const tx = await contract.processReport(parseInt(reportId));
+                showStatus('info', `Transaction submitted: ${tx.hash}`, 'verifyStatus');
+
+                const receipt = await tx.wait();
+                showStatus('success', `Report processed successfully! Transaction: ${receipt.transactionHash}`, 'verifyStatus');
+
+            } catch (error) {
+                showStatus('error', 'Failed to process report: ' + error.message, 'verifyStatus');
+            }
+        }
+
+        async function grantDecryptionAccess() {
+            try {
+                if (!contract) {
+                    throw new Error('Please connect your wallet first');
+                }
+
+                const reportId = document.getElementById('reportIdVerify').value;
+                const analystAddress = document.getElementById('analystAddress').value;
+
+                if (!reportId) {
+                    throw new Error('Please enter a report ID');
+                }
+
+                if (!analystAddress) {
+                    throw new Error('Please enter an analyst address');
+                }
+
+                if (!ethers.utils.isAddress(analystAddress)) {
+                    throw new Error('Invalid analyst address');
+                }
+
+                showStatus('info', 'Granting decryption access...', 'verifyStatus');
+
+                const tx = await contract.grantDecryptionAccess(parseInt(reportId), analystAddress);
+                showStatus('info', `Transaction submitted: ${tx.hash}`, 'verifyStatus');
+
+                const receipt = await tx.wait();
+                showStatus('success', `Decryption access granted successfully! Transaction: ${receipt.transactionHash}`, 'verifyStatus');
+
+            } catch (error) {
+                showStatus('error', 'Failed to grant decryption access: ' + error.message, 'verifyStatus');
+            }
+        }
+
+        async function authorizeEntity() {
+            try {
+                if (!contract) {
+                    throw new Error('Please connect your wallet first');
+                }
+
+                const entityAddress = document.getElementById('entityAddress').value;
+                if (!entityAddress) {
+                    throw new Error('Please enter an entity address');
+                }
+
+                if (!ethers.utils.isAddress(entityAddress)) {
+                    throw new Error('Invalid Ethereum address');
+                }
+
+                showStatus('info', 'Authorizing entity...', 'manageStatus');
+
+                const tx = await contract.authorizeEntity(entityAddress);
+                showStatus('info', `Transaction submitted: ${tx.hash}`, 'manageStatus');
+
+                const receipt = await tx.wait();
+                showStatus('success', `Entity authorized successfully! Transaction: ${receipt.transactionHash}`, 'manageStatus');
+
+            } catch (error) {
+                showStatus('error', 'Failed to authorize entity: ' + error.message, 'manageStatus');
+            }
+        }
+
+        async function revokeEntity() {
+            try {
+                if (!contract) {
+                    throw new Error('Please connect your wallet first');
+                }
+
+                const entityAddress = document.getElementById('entityAddress').value;
+                if (!entityAddress) {
+                    throw new Error('Please enter an entity address');
+                }
+
+                if (!ethers.utils.isAddress(entityAddress)) {
+                    throw new Error('Invalid Ethereum address');
+                }
+
+                showStatus('info', 'Revoking entity...', 'manageStatus');
+
+                const tx = await contract.revokeEntity(entityAddress);
+                showStatus('info', `Transaction submitted: ${tx.hash}`, 'manageStatus');
+
+                const receipt = await tx.wait();
+                showStatus('success', `Entity revoked successfully! Transaction: ${receipt.transactionHash}`, 'manageStatus');
+
+            } catch (error) {
+                showStatus('error', 'Failed to revoke entity: ' + error.message, 'manageStatus');
+            }
+        }
+
+        async function createReportingPeriod() {
+            try {
+                if (!contract) {
+                    throw new Error('Please connect your wallet first');
+                }
+
+                const duration = document.getElementById('periodDuration').value;
+                const submissionDays = document.getElementById('submissionDays').value;
+
+                if (!duration || !submissionDays) {
+                    throw new Error('Please fill in all fields');
+                }
+
+                showStatus('info', 'Creating reporting period...', 'manageStatus');
+
+                const durationSeconds = parseInt(duration) * 24 * 60 * 60;
+                const tx = await contract.createReportingPeriod(durationSeconds, parseInt(submissionDays));
+                showStatus('info', `Transaction submitted: ${tx.hash}`, 'manageStatus');
+
+                const receipt = await tx.wait();
+                showStatus('success', `Reporting period created successfully! Transaction: ${receipt.transactionHash}`, 'manageStatus');
+
+                loadPeriodsForSelect();
+
+            } catch (error) {
+                showStatus('error', 'Failed to create reporting period: ' + error.message, 'manageStatus');
+            }
+        }
+
+        async function closePeriod() {
+            try {
+                if (!contract) {
+                    throw new Error('Please connect your wallet first');
+                }
+
+                const periodId = document.getElementById('closePeriodId').value;
+                if (!periodId) {
+                    throw new Error('Please enter a period ID');
+                }
+
+                showStatus('info', 'Closing period...', 'manageStatus');
+
+                const tx = await contract.closePeriod(parseInt(periodId));
+                showStatus('info', `Transaction submitted: ${tx.hash}`, 'manageStatus');
+
+                const receipt = await tx.wait();
+                showStatus('success', `Period closed successfully! Transaction: ${receipt.transactionHash}`, 'manageStatus');
+
+            } catch (error) {
+                showStatus('error', 'Failed to close period: ' + error.message, 'manageStatus');
+            }
+        }
+
+        async function getReportInfo() {
+            try {
+                if (!contract) {
+                    throw new Error('Please connect your wallet first');
+                }
+
+                const reportId = document.getElementById('reportIdView').value;
+                if (!reportId) {
+                    throw new Error('Please enter a report ID');
+                }
+
+                showStatus('info', 'Loading report info...', 'viewStatus');
+
+                const reportInfo = await contract.getReportInfo(parseInt(reportId));
+
+                const reportHtml = `
+                    <div class="report-item">
+                        <div class="report-header">
+                            <span class="report-id">Report #${reportId}</span>
+                        </div>
+                        <p><strong>Submitter:</strong> ${reportInfo.submitter}</p>
+                        <p><strong>Timestamp:</strong> ${new Date(reportInfo.timestamp * 1000).toLocaleString()}</p>
+                        <p><strong>Report Period:</strong> ${reportInfo.reportPeriod}</p>
+                        <p><strong>Verified:</strong> <span class="report-status ${reportInfo.verified ? 'status-verified' : 'status-pending'}">${reportInfo.verified ? 'Yes' : 'No'}</span></p>
+                        <p><strong>Processed:</strong> <span class="report-status ${reportInfo.processed ? 'status-processed' : 'status-pending'}">${reportInfo.processed ? 'Yes' : 'No'}</span></p>
+                    </div>
+                `;
+
+                document.getElementById('reportsContainer').innerHTML = reportHtml;
+                showStatus('success', 'Report info loaded successfully!', 'viewStatus');
+
+            } catch (error) {
+                showStatus('error', 'Failed to get report info: ' + error.message, 'viewStatus');
+            }
+        }
+
+        async function loadReports() {
+            try {
+                if (!contract) {
+                    throw new Error('Please connect your wallet first');
+                }
+
+                showStatus('info', 'Loading reports...', 'viewStatus');
+
+                const totalReports = await contract.getTotalReports();
+                const currentPeriod = await contract.getCurrentPeriod();
+
+                let reportsHtml = `
+                    <div class="status info">
+                        <strong>Total Reports:</strong> ${totalReports}<br>
+                        <strong>Current Period:</strong> ${currentPeriod}
+                    </div>
+                `;
+
+                if (totalReports > 0) {
+                    for (let i = 1; i <= Math.min(totalReports, 10); i++) {
+                        try {
+                            const reportInfo = await contract.getReportInfo(i);
+                            reportsHtml += `
+                                <div class="report-item">
+                                    <div class="report-header">
+                                        <span class="report-id">Report #${i}</span>
+                                        <span class="report-status ${reportInfo.verified ? 'status-verified' : 'status-pending'}">
+                                            ${reportInfo.verified ? 'Verified' : 'Pending'}
+                                        </span>
+                                    </div>
+                                    <p><strong>Submitter:</strong> ${reportInfo.submitter}</p>
+                                    <p><strong>Period:</strong> ${reportInfo.reportPeriod}</p>
+                                    <p><strong>Date:</strong> ${new Date(reportInfo.timestamp * 1000).toLocaleDateString()}</p>
+                                </div>
+                            `;
+                        } catch (error) {
+                            console.error(`Error loading report ${i}:`, error);
+                        }
+                    }
+                }
+
+                document.getElementById('reportsContainer').innerHTML = reportsHtml;
+                showStatus('success', 'Reports loaded successfully!', 'viewStatus');
+
+            } catch (error) {
+                showStatus('error', 'Failed to load reports: ' + error.message, 'viewStatus');
+            }
+        }
+
+        async function loadPeriods() {
+            try {
+                if (!contract) {
+                    throw new Error('Please connect your wallet first');
+                }
+
+                showStatus('info', 'Loading periods...', 'viewStatus');
+
+                const currentPeriod = await contract.getCurrentPeriod();
+                let periodsHtml = '<h4>Reporting Periods</h4>';
+
+                for (let i = 1; i <= currentPeriod; i++) {
+                    try {
+                        const periodInfo = await contract.getPeriodInfo(i);
+                        periodsHtml += `
+                            <div class="report-item">
+                                <div class="report-header">
+                                    <span class="report-id">Period #${i}</span>
+                                    <span class="report-status ${periodInfo.active ? 'status-verified' : 'status-processed'}">
+                                        ${periodInfo.active ? 'Active' : 'Closed'}
+                                    </span>
+                                </div>
+                                <p><strong>Start:</strong> ${new Date(periodInfo.startTime * 1000).toLocaleDateString()}</p>
+                                <p><strong>End:</strong> ${new Date(periodInfo.endTime * 1000).toLocaleDateString()}</p>
+                                <p><strong>Submission Deadline:</strong> ${new Date(periodInfo.submissionDeadline * 1000).toLocaleDateString()}</p>
+                                <p><strong>Total Submissions:</strong> ${periodInfo.totalSubmissions}</p>
+                            </div>
+                        `;
+                    } catch (error) {
+                        console.error(`Error loading period ${i}:`, error);
+                    }
+                }
+
+                document.getElementById('reportsContainer').innerHTML = periodsHtml;
+                showStatus('success', 'Periods loaded successfully!', 'viewStatus');
+
+            } catch (error) {
+                showStatus('error', 'Failed to load periods: ' + error.message, 'viewStatus');
+            }
+        }
+
+        async function checkAuthorization() {
+            try {
+                if (!contract || !userAccount) {
+                    throw new Error('Please connect your wallet first');
+                }
+
+                showStatus('info', 'Checking authorization...', 'viewStatus');
+
+                const isAuthorized = await contract.isAuthorizedEntity(userAccount);
+                const owner = await contract.owner();
+                const regulator = await contract.regulator();
+
+                const authHtml = `
+                    <div class="status ${isAuthorized ? 'success' : 'error'}">
+                        <h4>Authorization Status</h4>
+                        <p><strong>Your Address:</strong> ${userAccount}</p>
+                        <p><strong>Authorized to Submit Reports:</strong> ${isAuthorized ? 'Yes' : 'No'}</p>
+                        <p><strong>Contract Owner:</strong> ${owner}</p>
+                        <p><strong>Regulator:</strong> ${regulator}</p>
+                        <p><strong>You are Owner:</strong> ${userAccount.toLowerCase() === owner.toLowerCase() ? 'Yes' : 'No'}</p>
+                        <p><strong>You are Regulator:</strong> ${userAccount.toLowerCase() === regulator.toLowerCase() ? 'Yes' : 'No'}</p>
+                    </div>
+                `;
+
+                document.getElementById('reportsContainer').innerHTML = authHtml;
+                showStatus('success', 'Authorization status loaded!', 'viewStatus');
+
+            } catch (error) {
+                showStatus('error', 'Failed to check authorization: ' + error.message, 'viewStatus');
+            }
+        }
+
+        async function loadPeriodsForSelect() {
+            try {
+                if (!contract) return;
+
+                const currentPeriod = await contract.getCurrentPeriod();
+                const select = document.getElementById('periodId');
+                select.innerHTML = '<option value="">Select reporting period</option>';
+
+                for (let i = 1; i <= currentPeriod; i++) {
+                    try {
+                        const periodInfo = await contract.getPeriodInfo(i);
+                        if (periodInfo.active) {
+                            const option = document.createElement('option');
+                            option.value = i;
+                            option.textContent = `Period ${i} (Deadline: ${new Date(periodInfo.submissionDeadline * 1000).toLocaleDateString()})`;
+                            select.appendChild(option);
+                        }
+                    } catch (error) {
+                        console.error(`Error loading period ${i} for select:`, error);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading periods for select:', error);
+            }
+        }
+
+        function switchTab(tabName) {
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function showStatus(type, message, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+
+        window.addEventListener('load', function() {
+            let attempts = 0;
+            const maxAttempts = 10;
+
+            function checkEthersAndInit() {
+                attempts++;
+                if (typeof ethers !== 'undefined') {
+                    init();
+                } else if (attempts < maxAttempts) {
+                    setTimeout(checkEthersAndInit, 200);
+                } else {
+                    showStatus('error', 'Failed to load blockchain library. Please refresh the page.', 'submitStatus');
+                }
+            }
+
+            checkEthersAndInit();
+        });
+
+        if (typeof window.ethereum !== 'undefined') {
+            window.ethereum.on('accountsChanged', function (accounts) {
+                if (accounts.length === 0 || accounts[0] !== userAccount) {
+                    location.reload();
+                }
+            });
+
+            window.ethereum.on('chainChanged', function (chainId) {
+                location.reload();
+            });
+        }
+    </script>
+</body>
+</html>
