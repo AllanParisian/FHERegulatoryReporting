@@ -30,7 +30,7 @@ Production-ready confidential compliance reporting system
 - fhEVM SDK: [https://github.com/AllanParisian/fhevm-react-template](https://github.com/AllanParisian/fhevm-react-template)
 - Privacy Reporting: [https://github.com/AllanParisian/FHERegulatoryReporting](https://github.com/AllanParisian/FHERegulatoryReporting)
 
-**Live Demo**: [https://fhe-regulatory-reporting.vercel.app/](https://fhe-regulatory-reporting.vercel.app/)  
+**Live Demo**: [Live](https://fhe-regulatory-reporting.vercel.app/)  
 ---
 
 ## 📺 Demo Video
