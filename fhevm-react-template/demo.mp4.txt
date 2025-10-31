@@ -1,0 +1,37 @@
+DEMO VIDEO PLACEHOLDER
+
+The demo.mp4 video file should be recorded following the script in DEMO_VIDEO_SCRIPT.md
+
+Video Requirements:
+- Duration: 5-7 minutes
+- Format: MP4 (H.264, 1080p, 60fps)
+- Audio: Clear narration
+- Resolution: 1920x1080
+
+Contents:
+1. Introduction and overview
+2. Quick start demonstration (< 10 lines of code)
+3. SDK architecture walkthrough
+4. Encryption demo in Next.js app
+5. React hooks integration
+6. Decryption demo (user + public)
+7. Production example (Privacy Regulatory Reporting)
+8. Contract deployment
+9. Design choices explanation
+10. Framework flexibility showcase
+11. Summary and wrap-up
+
+Recording Tips:
+- Use large fonts for visibility
+- High contrast color scheme
+- Slow pace during code sections
+- Include cursor highlighting
+- Add text overlays for key points
+
+Post-Production:
+- Add chapter markers
+- Include closed captions
+- Export as MP4
+- Place in this directory as "demo.mp4"
+
+See DEMO_VIDEO_SCRIPT.md for complete script and recording instructions.
