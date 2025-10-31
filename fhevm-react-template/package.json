@@ -1,0 +1,57 @@
+{
+  "name": "fhevm-react-template",
+  "version": "2.0.0",
+  "description": "Universal fhEVM SDK with framework-agnostic support for building privacy-preserving dApps",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "examples/*"
+  ],
+  "scripts": {
+    "build": "npm run build:sdk",
+    "build:sdk": "cd packages/fhevm-sdk && npm run build",
+    "dev:nextjs": "cd examples/nextjs-privacy-dashboard && npm run dev",
+    "dev:sdk": "cd packages/fhevm-sdk && npm run dev",
+    "test": "npm run test:sdk",
+    "test:sdk": "cd packages/fhevm-sdk && npm test",
+    "lint": "npm run lint:sdk",
+    "lint:sdk": "cd packages/fhevm-sdk && npm run lint",
+    "format": "npm run format:sdk",
+    "format:sdk": "cd packages/fhevm-sdk && npm run format",
+    "clean": "rm -rf packages/*/dist packages/*/node_modules examples/*/node_modules examples/*/.next node_modules",
+    "install:all": "npm install && npm run install:sdk && npm run install:nextjs && npm run install:example",
+    "install:sdk": "cd packages/fhevm-sdk && npm install",
+    "install:nextjs": "cd examples/nextjs-privacy-dashboard && npm install",
+    "install:example": "cd examples/privacy-regulatory-reporting && npm install",
+    "deploy:example": "cd examples/privacy-regulatory-reporting && npm run deploy",
+    "compile:example": "cd examples/privacy-regulatory-reporting && npm run compile"
+  },
+  "keywords": [
+    "fhevm",
+    "zama",
+    "privacy",
+    "encryption",
+    "blockchain",
+    "ethereum",
+    "sdk",
+    "react",
+    "nextjs",
+    "wagmi",
+    "monorepo"
+  ],
+  "author": "Privacy Compliance Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/fhevm-react-template"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "prettier": "^3.1.0",
+    "eslint": "^8.57.0"
+  }
+}
