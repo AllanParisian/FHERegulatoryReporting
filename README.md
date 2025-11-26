@@ -16,6 +16,37 @@ A complete suite of privacy-preserving applications and SDK built with [Zama fhE
 
 ---
 
+## 🆕 Latest Updates (2025-11-24)
+
+### Enhanced Privacy Reporting System
+
+The project now includes a major upgrade with the **EnhancedPrivacyReporting.sol** smart contract featuring:
+
+**New Smart Contract**:
+- `contracts/EnhancedPrivacyReporting.sol` - Production-ready enhanced version
+
+**New Documentation**:
+- `docs/API.md` - Comprehensive API reference for all functions
+- `docs/ARCHITECTURE.md` - Detailed architecture guide with Gateway callback flow
+
+**Key Innovations**:
+1. **Gateway Callback Mode** - Asynchronous decryption eliminates blocking operations
+2. **Smart Refund System** - Automatic recovery for failed/timeout operations
+3. **Advanced Privacy Protection** - Random multiplier (100-10000) prevents timing attacks
+4. **Timeout Protection** - 7-day automatic timeout prevents permanent locking
+5. **HCU Optimization** - Efficient management of homomorphic computation units
+
+**Technical Improvements**:
+- Non-blocking async processing via Gateway oracle
+- Multi-layer security with overflow protection
+- Comprehensive event logging for full audit trail
+- Enhanced error handling with refund mechanisms
+- Price obfuscation for privacy-preserving calculations
+
+See [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) for complete technical details.
+
+---
+
 ## 📦 Project Structure
 
 This directory contains multiple integrated projects:
@@ -150,8 +181,22 @@ fhevm-react-template/
 
 Production-ready blockchain-based confidential regulatory reporting platform leveraging FHE technology. Enables financial institutions to submit encrypted compliance data while maintaining complete privacy.
 
-**Smart Contract**: `0x0B7F69092DF31270DE216D07ca22B3B8ee237154` (Sepolia)
+**Smart Contracts**:
+- **Original**: `0x0B7F69092DF31270DE216D07ca22B3B8ee237154` (Sepolia)
+- **Enhanced**: `EnhancedPrivacyReporting.sol` - New version with Gateway callback mode
+
 **Demo Video**: `PrivacyRegulatoryReporting.mp4`
+
+### New Enhanced Features (Latest Update)
+
+The system now includes an **Enhanced Privacy Reporting contract** with cutting-edge improvements:
+
+- 🔄 **Gateway Callback Mode** - Asynchronous decryption processing (non-blocking)
+- 💰 **Refund Mechanism** - Automatic refunds for failed/timeout decryptions
+- ⏱️ **Timeout Protection** - 7-day automatic timeout for stuck operations
+- 🔐 **Advanced Privacy** - Random multiplier for division protection
+- 🎭 **Price Obfuscation** - Enhanced privacy through fuzzy encoding
+- 🛡️ **Comprehensive Security** - Multi-layer validation and overflow protection
 
 ### Technology Stack
 
@@ -184,6 +229,7 @@ Production-ready blockchain-based confidential regulatory reporting platform lev
 
 ### Key Features
 
+**Core Features:**
 - 🔒 **Privacy-Preserving Submissions** - Financial data encrypted on-chain using FHE
 - 🛡️ **Zero-Knowledge Compliance** - Verify reports without revealing sensitive information
 - 👥 **Multi-Party Authorization** - Role-based access control (Owner, Regulator, Entities)
@@ -192,6 +238,16 @@ Production-ready blockchain-based confidential regulatory reporting platform lev
 - 📊 **Real-Time Tracking** - Monitor submissions, verifications, and compliance status
 - ✅ **Comprehensive Testing** - 60+ test cases with security auditing
 - 🚀 **CI/CD Pipeline** - Automated testing, linting, and deployment
+
+**Enhanced Contract Features (NEW):**
+- 🔄 **Gateway Callback Mode** - Non-blocking asynchronous decryption processing
+- 💰 **Smart Refund System** - Automatic recovery for failed operations
+- ⏱️ **Timeout Protection** - 7-day safeguard prevents permanent locking
+- 🔐 **Division Protection** - Random multiplier (100-10000) prevents timing attacks
+- 🎭 **Amount Obfuscation** - Privacy-preserving price encoding
+- 🛡️ **Overflow Protection** - Multi-layer validation and boundary checks
+- 📈 **HCU Optimization** - Efficient homomorphic computation management
+- 📝 **Comprehensive Events** - Full audit trail for all operations
 
 ### FHE Contract Architecture
 
@@ -205,14 +261,53 @@ This project implements a **privacy-preserving regulatory reporting system** usi
 
 **Key Innovation**: Traditional blockchain transparency is incompatible with financial privacy requirements. This FHE-based solution allows regulatory compliance while maintaining confidentiality of sensitive business data.
 
+### Contract Versions
+
+#### 1. Original Contract (PrivacyRegulatoryReporting.sol)
+Traditional synchronous FHE implementation with basic features.
+
+**Deployed**: `0x0B7F69092DF31270DE216D07ca22B3B8ee237154` (Sepolia)
+
+#### 2. Enhanced Contract (EnhancedPrivacyReporting.sol) - NEW
+Advanced implementation with Gateway callback mode and innovative privacy features.
+
+**Key Improvements**:
+- Asynchronous decryption via Gateway oracle
+- Automatic refund mechanism for failed operations
+- Advanced privacy protection with random multipliers
+- Comprehensive timeout protection (7 days)
+- Enhanced security with multi-layer validation
+
+**Documentation**:
+- API Reference: [docs/API.md](./docs/API.md)
+- Architecture Guide: [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)
+
 ### How It Works
 
+#### Original Flow (Synchronous):
 ```
 Financial Institution → Encrypt Data (FHE) → Submit to Blockchain
                                                       ↓
                                             Encrypted Storage (euint64, euint32, euint8)
                                                       ↓
 Regulator → Verify Compliance → Grant Access → Analyst Decrypts (with permission)
+```
+
+#### Enhanced Flow (Asynchronous with Gateway):
+```
+Financial Institution → Generate Privacy Multiplier → Obfuscate Amount
+                                ↓
+                        Encrypt Data (FHE) → Submit to Blockchain
+                                ↓
+                        Encrypted Storage (with multiplier)
+                                ↓
+Regulator → Verify Report → Request Decryption → Gateway Oracle
+                                                        ↓
+                                                [Async Processing]
+                                                        ↓
+                                            Callback → Decode → Process
+                                                        ↓
+                        Success: Grant Access | Timeout/Fail: Refund
 ```
 
 ---
@@ -238,6 +333,16 @@ Regulator → Verify Compliance → Grant Access → Analyst Decrypts (with perm
 
 ```
 ┌─────────────────────────────────────────────┐
+│    EnhancedPrivacyReporting.sol (NEW)       │
+├─────────────────────────────────────────────┤
+│  ├─ Gateway Callback Integration           │
+│  ├─ Refund Mechanism                        │
+│  ├─ Timeout Protection (7 days)            │
+│  ├─ Privacy Multiplier Generation          │
+│  └─ Overflow Protection                     │
+└─────────────────────────────────────────────┘
+                      ↓
+┌─────────────────────────────────────────────┐
 │    PrivacyRegulatoryReporting.sol           │
 ├─────────────────────────────────────────────┤
 │  ├─ Encrypted Storage (euint64, euint32)   │
@@ -251,6 +356,7 @@ Regulator → Verify Compliance → Grant Access → Analyst Decrypts (with perm
 ├─────────────────────────────────────────────┤
 │  fhevm/solidity - Encrypted types           │
 │  TFHE.sol - Homomorphic operations          │
+│  Gateway.sol - Async decryption oracle      │
 │  Sepolia Testnet Deployment                 │
 └─────────────────────────────────────────────┘
                       ↓
@@ -266,10 +372,26 @@ Regulator → Verify Compliance → Grant Access → Analyst Decrypts (with perm
 
 ### Data Flow
 
+#### Original Contract:
 ```
 Entity → Encrypt Data (TFHE) → Submit Report → On-Chain Storage
                                        ↓
 Regulator → Verify Report → Grant Access → Analyst Decrypts
+```
+
+#### Enhanced Contract (with Gateway):
+```
+Entity → Generate Multiplier → Obfuscate → Encrypt (TFHE) → Submit
+                                                              ↓
+                                                    Store with Multiplier
+                                                              ↓
+Regulator → Verify → Request Decryption → Gateway Oracle
+                                              ↓
+                                    [Wait up to 7 days]
+                                              ↓
+                         Success: Callback → Decode → Process
+                                  or
+                         Timeout/Fail → Refund Trigger
 ```
 
 ---
@@ -330,8 +452,7 @@ npm run verify
 
 ### Encrypted Data Types (fhEVM)
 
-The contract uses Zama's encrypted types for privacy-preserving computations:
-
+#### Original Contract:
 ```solidity
 import "fhevm/lib/TFHE.sol";
 
@@ -345,8 +466,31 @@ struct ConfidentialReport {
 }
 ```
 
+#### Enhanced Contract (NEW):
+```solidity
+import "fhevm/lib/TFHE.sol";
+import "fhevm/gateway/GatewayCaller.sol";
+
+struct ConfidentialReport {
+    euint64 encryptedAmount;
+    euint32 encryptedTransactionCount;
+    euint8 encryptedRiskScore;
+    address submitter;
+    uint256 timestamp;
+    uint256 reportPeriod;
+    bool verified;
+    bool processed;
+    uint256 decryptionRequestId;       // Gateway request tracking
+    bool decryptionRequested;
+    uint256 decryptionRequestTime;
+    bool refunded;                     // Refund status
+    uint256 privacyMultiplier;         // Privacy protection (100-10000)
+}
+```
+
 ### FHE Operations
 
+#### Basic Operations:
 ```solidity
 // Encrypt sensitive data before storage
 euint64 encryptedAmount = TFHE.asEuint64(totalAmount);
@@ -358,8 +502,30 @@ TFHE.allow(encryptedAmount, regulator);
 TFHE.allow(encryptedTxCount, analyst);
 ```
 
+#### Enhanced Operations with Privacy Protection (NEW):
+```solidity
+// Generate random privacy multiplier
+uint256 privacyMultiplier = _generatePrivacyMultiplier(amount, count);
+
+// Obfuscate amount before encryption
+uint64 obfuscatedAmount = uint64((uint256(totalAmount) * privacyMultiplier) / 1000);
+
+// Encrypt obfuscated data
+euint64 encryptedAmount = TFHE.asEuint64(obfuscatedAmount);
+
+// Request async decryption via Gateway
+uint256 requestId = Gateway.requestDecryption(
+    ciphertexts,
+    this.decryptionCallback.selector,
+    0,
+    block.timestamp + DECRYPTION_TIMEOUT,
+    false
+);
+```
+
 ### Smart Contract Functions
 
+#### Core Functions:
 ```solidity
 // Entity Management
 function authorizeEntity(address entity) external onlyRegulator
@@ -376,6 +542,28 @@ function submitConfidentialReport(
 // Verification & Access Control
 function verifyReport(uint256 reportId) external onlyRegulator
 function grantDecryptionAccess(uint256 reportId, address analyst) external onlyRegulator
+```
+
+#### Enhanced Functions (NEW):
+```solidity
+// Gateway Callback Mode
+function requestReportDecryption(uint256 reportId) external onlyRegulator
+function decryptionCallback(uint256 requestId, bool success, bytes memory data) public onlyGateway
+
+// Refund Mechanism
+function issueRefund(uint256 reportId) external
+
+// Enhanced View Functions
+function getDecryptionStatus(uint256 reportId) external view returns (
+    bool requested,
+    uint256 requestId,
+    uint256 requestTime,
+    bool completed,
+    bool timedOut
+)
+
+// Privacy Protection
+function _generatePrivacyMultiplier(uint64 amount, uint32 count) private view returns (uint256)
 ```
 
 ---
@@ -715,6 +903,8 @@ ETHERSCAN_API_KEY=your_etherscan_api_key_here
 | Document | Description | Location |
 |----------|-------------|----------|
 | [App README](./privacy-regulatory-reporting/README.md) | Complete application documentation | `privacy-regulatory-reporting/` |
+| **[Enhanced Contract API](./docs/API.md)** | **NEW: Complete API reference for EnhancedPrivacyReporting** | `docs/` |
+| **[Architecture Guide](./docs/ARCHITECTURE.md)** | **NEW: Technical architecture and Gateway callback flow** | `docs/` |
 | [Deployment Guide](./DEPLOYMENT.md) | Complete deployment guide | Root directory |
 | [Testing Guide](./TESTING.md) | Testing documentation | Root directory |
 | [Security & Performance](./SECURITY_PERFORMANCE.md) | Security and performance docs | Root directory |
@@ -927,22 +1117,26 @@ This directory provides a **complete privacy-preserving blockchain development e
 
 ✅ **Universal SDK** - Framework-agnostic FHE development kit
 ✅ **Production Deployment** - Smart contract on Sepolia testnet
+✅ **Enhanced Contract (NEW)** - Gateway callback mode with refund mechanism
 ✅ **Comprehensive Testing** - 60+ test cases with security auditing
 ✅ **Complete Documentation** - Guides for every aspect of development
 ✅ **Modern Tech Stack** - Latest versions of all major frameworks
 ✅ **CI/CD Pipeline** - Automated testing, linting, and deployment
 ✅ **Enterprise Security** - DoS protection, rate limiting, access control
 ✅ **Gas Optimization** - Efficient smart contract operations
+✅ **Advanced Privacy** - Multiplier-based obfuscation and timeout protection
 
 ### Quick Stats
 
 - **2 Major Projects**: SDK + Production dApp
+- **2 Smart Contracts**: Original + Enhanced with Gateway callback
 - **3+ Frontend Examples**: Next.js templates and demos
 - **60+ Tests**: Comprehensive test coverage
-- **10+ Documentation Files**: Complete guides and references
+- **12+ Documentation Files**: Complete guides and references (including new API & Architecture docs)
 - **1 Deployed Contract**: Production-ready on Sepolia
 - **100% TypeScript**: Type-safe development throughout
 - **Zero Config**: Works out of the box
+- **Advanced Privacy**: Multiplier-based obfuscation (100-10000 range)
 
 ---
 
